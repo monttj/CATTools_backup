@@ -6,11 +6,41 @@ process.options.allowUnscheduled = cms.untracked.bool(True)
 process.load("PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff")
 process.load("PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff")
 
+### added for muon isolation study with weighted method #############################
+# 4508 PR needs to be merged, we can move this sequence below to tool area in python 
+process.load("CommonTools.ParticleFlow.deltaBetaWeights_cff")
+
+from PhysicsTools.PatAlgos.tools.helpers import loadWithPostfix
+loadWithPostfix(process,'RecoMuon.MuonIsolation.muonPFIsolation_cff',"Weighted")
+
+process.weightedPatMuons = process.patMuons.clone()
+
+process.muPFIsoDepositNeutralWeighted.ExtractorPSet.inputCandView = 'pfWeightedNeutralHadrons'
+process.muPFIsoDepositGammaWeighted.ExtractorPSet.inputCandView = 'pfWeightedPhotons'
+
+process.weightedPatMuons.isoDeposits = cms.PSet(
+    pfChargedHadrons = cms.InputTag("muPFIsoDepositChargedWeighted" ),
+    pfChargedAll = cms.InputTag("muPFIsoDepositChargedAllWeighted" ),
+    pfPUChargedHadrons = cms.InputTag("muPFIsoDepositPUWeighted" ),
+    pfNeutralHadrons = cms.InputTag("muPFIsoDepositNeutralWeighted" ),
+    pfPhotons = cms.InputTag("muPFIsoDepositGammaWeighted" ),
+    )
+
+process.weightedPatMuons.isolationValues = cms.PSet(
+    pfChargedHadrons = cms.InputTag("muPFIsoValueCharged04Weighted"),
+    pfChargedAll = cms.InputTag("muPFIsoValueChargedAll04Weighted"),
+    pfPUChargedHadrons = cms.InputTag("muPFIsoValuePU04Weighted" ),
+    pfNeutralHadrons = cms.InputTag("muPFIsoValueNeutral04Weighted" ),
+    pfPhotons = cms.InputTag("muPFIsoValueGamma04Weighted" ),
+    )
+######################################################################################
+
+
 #process.source.fileNames = filesRelValProdTTbarAODSIM
 # Input source
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
-    fileNames = cms.untracked.vstring('/store/relval/CMSSW_7_0_0/RelValTTbar_13/GEN-SIM-RECO/PU50ns_POSTLS170_V4-v2/00000/265B9219-FF98-E311-BF4A-02163E00EA95.root')
+    fileNames = cms.untracked.vstring('/store/relval/CMSSW_7_0_6_patch1/RelValZMM_13/GEN-SIM-RECO/PLS170_V7AN1-v1/00000/862FBA61-8702-E411-8EE8-003048D25BA6.root')
 )
 
 process.maxEvents.input = 100
@@ -96,7 +126,7 @@ process.analysis = cms.EDAnalyzer("ObjectProducer",
                 primaryVertexProducer = cms.InputTag("goodOfflinePrimaryVertices"),
                 vgenJetProducer = cms.untracked.vstring("ak5GenJetsNoNu"),
                 vpfJetProducer = cms.untracked.vstring("selectedPatJets"),
-                vmuonProducer = cms.untracked.vstring("selectedPatMuons"),
+                vmuonProducer = cms.untracked.vstring("selectedPatMuons","weightedPatMuons"),
                 velectronProducer = cms.untracked.vstring("selectedPatElectrons"),
                 vphotonProducer = cms.untracked.vstring("selectedPatPhotons"),
                 vpfmetProducer = cms.untracked.vstring("patMETs"),
