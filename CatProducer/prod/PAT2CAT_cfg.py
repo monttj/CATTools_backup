@@ -10,7 +10,10 @@ process.load("CATTools.CatProducer.catCandidates_cff")
 # Input source
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
-    fileNames = cms.untracked.vstring('/store/relval/CMSSW_7_0_6_patch1/RelValZMM_13/GEN-SIM-RECO/PLS170_V7AN1-v1/00000/862FBA61-8702-E411-8EE8-003048D25BA6.root')
+    fileNames = cms.untracked.vstring(
+#        '/store/relval/CMSSW_7_0_6_patch1/RelValZMM_13/GEN-SIM-RECO/PLS170_V7AN1-v1/00000/862FBA61-8702-E411-8EE8-003048D25BA6.root'
+'/store/relval/CMSSW_7_1_0/RelValTTbarLepton_13/GEN-SIM-RECO/POSTLS171_V15-v1/00000/5853DC34-8AFB-E311-B4A5-002590596484.root'
+        )
 )
 
 ## for muon isolation study with weighted method
