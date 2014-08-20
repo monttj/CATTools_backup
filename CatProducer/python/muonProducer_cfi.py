@@ -4,5 +4,6 @@ catMuons = cms.EDProducer("CATMuonProducer",
     # input collection
     src = cms.InputTag("patMuons"),
     vertexLabel = cms.InputTag('offlinePrimaryVertices'),
+    beamLineSrc = cms.InputTag("offlineBeamSpot"),
 )
 
